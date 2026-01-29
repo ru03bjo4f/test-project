@@ -9,8 +9,9 @@ const PORT = 3000;
 
 function createServer() {
   const server = http.createServer((req, res) => {
+    const now = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end('<h1>Hello World</h1>');
+    res.end(`<h1>歡迎來到我的網站</h1><p>現在時間: ${now}</p>`);
   });
 
   return server;
