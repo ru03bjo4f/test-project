@@ -37,6 +37,9 @@ temp/
 *.tmp
 *.bak
 
+# Claude Code Channels
+.claude/channels/**/.env
+
 # Coverage
 coverage/
 .nyc_output/
