@@ -53,10 +53,38 @@ fi
 echo "[5/5] 檢查 port 可用性..."
 for PORT in 8080 18789; do
   if lsof -i :"$PORT" &>/dev/null; then
-    BLOCKER=$(lsof -i :"$PORT" -t 2>/dev/null | head -1)
-    echo "  ✗ Port $PORT 被 PID $BLOCKER 佔用"
-    echo "    執行: sudo kill $BLOCKER"
-    exit 1
+    BLOCKER_PID=$(lsof -i :"$PORT" -t 2>/dev/null | head -1)
+    BLOCKER_CMD=$(ps -p "$BLOCKER_PID" -o comm= 2>/dev/null || echo "unknown")
+    echo "  ⚠ Port $PORT 被 $BLOCKER_CMD (PID $BLOCKER_PID) 佔用"
+
+    # 嘗試透過 openshell 清理舊的 gateway 殘留程序
+    if [ "$PORT" -eq 18789 ] && command -v openshell &>/dev/null; then
+      echo "  → 偵測到 port 18789 佔用，嘗試清理舊的 OpenClaw Gateway 殘留..."
+      openshell gateway destroy -g nemoclaw 2>/dev/null || true
+      sleep 2
+    fi
+
+    # 如果 port 仍被佔用，詢問使用者是否自動清理
+    if lsof -i :"$PORT" &>/dev/null; then
+      BLOCKER_PID=$(lsof -i :"$PORT" -t 2>/dev/null | head -1)
+      echo "  ⚠ Port $PORT 仍被 PID $BLOCKER_PID 佔用"
+      read -rp "  是否自動終止此程序？(y/N): " CONFIRM
+      if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
+        kill -9 "$BLOCKER_PID" 2>/dev/null || sudo kill -9 "$BLOCKER_PID"
+        sleep 1
+        if lsof -i :"$PORT" &>/dev/null; then
+          echo "  ✗ 無法釋放 port $PORT，請手動處理"
+          exit 1
+        fi
+        echo "  ✓ Port $PORT 已釋放"
+      else
+        echo "  ✗ Port $PORT 仍被佔用，無法繼續"
+        echo "    手動執行: sudo kill -9 $BLOCKER_PID"
+        exit 1
+      fi
+    else
+      echo "  ✓ Port $PORT 已透過 gateway 清理釋放"
+    fi
   else
     echo "  ✓ Port $PORT 可用"
   fi
