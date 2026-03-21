@@ -31,7 +31,7 @@ console.log('[Test] DEFAULTS');
 assert(DEFAULTS.ollama.baseUrl === 'http://localhost:11434', 'Ollama 預設 URL');
 assert(DEFAULTS.ollama.model === 'nemotron-mini', 'Ollama 預設模型');
 assert(DEFAULTS.nvidia.baseUrl === 'https://integrate.api.nvidia.com/v1', 'NVIDIA 預設 URL');
-assert(DEFAULTS.nvidia.model === 'nvidia/nemotron-3-super-120b-a12b', 'NVIDIA 預設模型');
+assert(DEFAULTS.nvidia.model === 'moonshotai/kimi-k2.5', 'NVIDIA 預設模型');
 
 // 2. 建立 Ollama 後端
 console.log('\n[Test] createOllamaBackend');

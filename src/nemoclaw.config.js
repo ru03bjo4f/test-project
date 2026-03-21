@@ -31,9 +31,10 @@ const config = {
   apiKey: process.env.NVIDIA_API_KEY || '',
 
   // NVIDIA 雲端模型設定（在 backend='nvidia' 時覆蓋上方 model）
+  // 可選模型：nvidia/nemotron-3-super-120b-a12b, moonshotai/kimi-k2.5, 等
   nvidia: {
     baseUrl: 'https://integrate.api.nvidia.com/v1',
-    model: 'nvidia/nemotron-3-super-120b-a12b',
+    model: process.env.NVIDIA_MODEL || 'moonshotai/kimi-k2.5',
   },
 };
 

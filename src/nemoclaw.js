@@ -19,7 +19,7 @@ const DEFAULTS = {
   },
   nvidia: {
     baseUrl: 'https://integrate.api.nvidia.com/v1',
-    model: 'nvidia/nemotron-3-super-120b-a12b',
+    model: 'moonshotai/kimi-k2.5',
   },
 };
 
