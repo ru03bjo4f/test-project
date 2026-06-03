@@ -12,6 +12,7 @@ import { Posts } from './collections/Posts'
 import { Pages } from './collections/Pages'
 import { Categories } from './collections/Categories'
 import { Tags } from './collections/Tags'
+import { SiteSettings } from './globals/SiteSettings'
 import { lexicalZhTw } from './i18n/lexical-zhtw'
 
 const filename = fileURLToPath(import.meta.url)
@@ -37,6 +38,7 @@ export default buildConfig({
     },
   },
   collections: [Posts, Pages, Categories, Tags, Media, Users],
+  globals: [SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
