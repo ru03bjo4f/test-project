@@ -1,43 +1,27 @@
-version: '3'
+# SQLite 版開發容器 (適用 OrbStack / Docker Desktop)
+# 用法:  cd app && docker compose up
+# 啟動後開 http://localhost:3000/admin
+#
+# 不需要外部資料庫 — SQLite 直接存成容器內 app/ 目錄下的 app.db 檔。
 
 services:
   payload:
-    image: node:20-alpine
+    image: node:22
     ports:
       - '3000:3000'
+    working_dir: /home/node/app
     volumes:
+      # 掛載原始碼 (改檔即時生效)
       - .:/home/node/app
+      # node_modules 用具名 volume, 讓容器內自行編譯 Linux 原生模組
+      # (sharp / sqlite), 避免與 macOS 主機的 node_modules 衝突
       - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
-    depends_on:
-      - mongo
-      # - postgres
-    env_file:
-      - .env
-
-  # Ensure your DATABASE_URL uses 'mongo' as the hostname ie. mongodb://mongo/my-db-name
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
-    volumes:
-      - data:/data/db
-    logging:
-      driver: none
-
-  # Uncomment the following to use postgres
-  # postgres:
-  #   restart: always
-  #   image: postgres:latest
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
+    environment:
+      # SQLite 資料庫檔 (存於掛載的 app/ 目錄)
+      DATABASE_URL: file:./app.db
+      # 開發用密鑰 — 正式環境請改成安全的隨機字串
+      PAYLOAD_SECRET: change-me-to-a-random-secret
+    command: sh -c "npm install && npm run dev"
 
 volumes:
-  data:
-  # pgdata:
   node_modules:
