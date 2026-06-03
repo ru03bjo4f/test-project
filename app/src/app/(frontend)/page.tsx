@@ -1,59 +1,42 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
 import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
 
 import config from '@/payload.config'
-import './styles.css'
+import PostCard from './_components/PostCard'
 
+export const dynamic = 'force-dynamic'
+
+/** 首頁 — 列出已發佈的文章 (對應 WP 的部落格首頁)。 */
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
-
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+  const payload = await getPayload({ config: await config })
+  const { docs: posts } = await payload.find({
+    collection: 'posts',
+    where: { _status: { equals: 'published' } },
+    sort: '-publishedAt',
+    depth: 1,
+    limit: 12,
+  })
 
   return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </a>
+    <div className="container">
+      <section className="hero">
+        <h1 className="hero__title">最新文章</h1>
+        <p className="hero__subtitle">由自建內容管理系統驅動的網站</p>
+      </section>
+
+      {posts.length === 0 ? (
+        <div className="empty-state">
+          <p className="empty-state__title">目前還沒有已發佈的文章</p>
+          <p className="empty-state__hint">
+            前往 <a href="/admin">後台管理</a> 新增文章，並將狀態設為「已發佈」即可在此顯示。
+          </p>
         </div>
-      </div>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
-        </a>
-      </div>
+      ) : (
+        <div className="post-grid">
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

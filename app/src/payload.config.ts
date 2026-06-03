@@ -1,5 +1,6 @@
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { zhTw } from '@payloadcms/translations/languages/zhTw'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -18,9 +19,17 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+    meta: {
+      titleSuffix: '· 內容管理系統',
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
+  },
+  // 後台介面語言: 繁體中文
+  i18n: {
+    supportedLanguages: { zhTw },
+    fallbackLanguage: 'zhTw',
   },
   collections: [Posts, Pages, Categories, Tags, Media, Users],
   editor: lexicalEditor(),
