@@ -1,12 +1,8 @@
 import Link from 'next/link'
 
 import type { Post } from '@/payload-types'
-import {
-  formatDate,
-  getAuthorName,
-  getMediaAlt,
-  getMediaURL,
-} from '../_lib/format'
+import MediaImage from './MediaImage'
+import { formatDate, getAuthorName, getMediaURL } from '../_lib/format'
 
 /** 首頁文章卡片 (對應 WP 文章列表中的單篇摘要)。 */
 export default function PostCard({ post }: { post: Post }) {
@@ -17,8 +13,11 @@ export default function PostCard({ post }: { post: Post }) {
       <Link href={`/posts/${post.slug}`} className="post-card__link">
         {cover && (
           <div className="post-card__media">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={cover} alt={getMediaAlt(post.featuredImage)} loading="lazy" />
+            <MediaImage
+              media={post.featuredImage}
+              fill
+              sizes="(max-width: 768px) 100vw, 360px"
+            />
           </div>
         )}
         <div className="post-card__body">

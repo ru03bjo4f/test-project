@@ -4,12 +4,12 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import { applyFilters, doAction } from '@/plugins'
+import MediaImage from '../../_components/MediaImage'
 import RichTextRenderer from '../../_components/RichTextRenderer'
 import {
   formatDate,
   getAuthorName,
   getCategoryNames,
-  getMediaAlt,
   getMediaURL,
 } from '../../_lib/format'
 
@@ -83,8 +83,11 @@ export default async function PostPage({ params }: Args) {
 
       {cover && (
         <figure className="article__cover">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={cover} alt={getMediaAlt(post.featuredImage)} />
+          <MediaImage
+            media={post.featuredImage}
+            sizes="(max-width: 720px) 100vw, 720px"
+            priority
+          />
         </figure>
       )}
 
