@@ -1,3 +1,4 @@
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { zhTw } from '@payloadcms/translations/languages/zhTw'
@@ -19,6 +20,14 @@ import { lexicalZhTw } from './i18n/lexical-zhtw'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// 依 DATABASE_URL 自動選擇資料庫:
+//   postgres://... → PostgreSQL (正式/容器環境)
+//   其他 (file:...) → SQLite     (本機快速開發, 免外部資料庫)
+const databaseURL = process.env.DATABASE_URL || 'file:./app.db'
+const db = databaseURL.startsWith('postgres')
+  ? postgresAdapter({ pool: { connectionString: databaseURL } })
+  : sqliteAdapter({ client: { url: databaseURL } })
 
 export default buildConfig({
   admin: {
@@ -46,11 +55,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URL || '',
-    },
-  }),
+  db,
   sharp,
   plugins: [],
 })

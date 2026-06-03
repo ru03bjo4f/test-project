@@ -1,8 +1,10 @@
-# SQLite 版開發容器 (適用 OrbStack / Docker Desktop)
+# 開發/正式容器 (適用 OrbStack / Docker Desktop)
 # 用法:  cd app && docker compose up
 # 啟動後開 http://localhost:3000/admin
 #
-# 不需要外部資料庫 — SQLite 直接存成容器內 app/ 目錄下的 app.db 檔。
+# 資料庫使用 PostgreSQL (更貼近正式環境)。
+# 若想改用免外部資料庫的 SQLite, 把 payload 服務的 DATABASE_URL
+# 改成 file:./app.db, 並可移除 postgres 服務與 depends_on。
 
 services:
   payload:
@@ -14,16 +16,35 @@ services:
       # 掛載原始碼 (改檔即時生效)
       - .:/home/node/app
       # node_modules 用具名 volume, 讓容器內自行編譯 Linux 原生模組
-      # (sharp / sqlite), 避免與 macOS 主機的 node_modules 衝突
       - node_modules:/home/node/app/node_modules
     environment:
-      # SQLite 資料庫檔 (存於掛載的 app/ 目錄)
-      DATABASE_URL: file:./app.db
+      # PostgreSQL 連線 (連到下方 postgres 服務)
+      DATABASE_URL: postgres://payload:payload@postgres:5432/payload
       # 開發用密鑰 — 正式環境請改成安全的隨機字串
       PAYLOAD_SECRET: change-me-to-a-random-secret
-    # 啟動流程: 安裝依賴 -> 依實際套件版本重新產生 importMap (避免後台
-    # 找不到 Lexical 等元件) -> 啟動 dev server (-H 0.0.0.0 容器外才連得到)
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # 啟動流程: 安裝依賴 -> 依實際套件版本重新產生 importMap -> 啟動 dev server
     command: sh -c "npm install && npm run generate:importmap && npm run dev -- -H 0.0.0.0"
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: payload
+      POSTGRES_PASSWORD: payload
+      POSTGRES_DB: payload
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      # 對外開放 5432 方便用資料庫工具連線 (可選)
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U payload']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   node_modules:
+  pgdata:
