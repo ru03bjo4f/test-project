@@ -270,6 +270,18 @@ export interface Page {
     [k: string]: unknown;
   } | null;
   /**
+   * 由視覺化編輯器產生的拖拉版面資料 (對應 Elementor/Gutenberg)。請至 /builder/<slug> 以拖拉方式編輯; 有版面時前台優先顯示版面而非純文字內文。
+   */
+  layout?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
    * 對應 WP 的階層頁面 (parent page)。
    */
   parent?: (number | null) | Page;
@@ -393,6 +405,7 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   content?: T;
+  layout?: T;
   parent?: T;
   updatedAt?: T;
   createdAt?: T;
