@@ -12,6 +12,7 @@ import { Posts } from './collections/Posts'
 import { Pages } from './collections/Pages'
 import { Categories } from './collections/Categories'
 import { Tags } from './collections/Tags'
+import { lexicalZhTw } from './i18n/lexical-zhtw'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -26,10 +27,14 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  // 後台介面語言: 繁體中文
+  // 後台介面語言: 繁體中文;
+  // 補上 Lexical 編輯器缺少的繁體翻譯 (官方僅提供簡體)。
   i18n: {
     supportedLanguages: { zhTw },
     fallbackLanguage: 'zhTw',
+    translations: {
+      zhTw: { lexical: lexicalZhTw },
+    },
   },
   collections: [Posts, Pages, Categories, Tags, Media, Users],
   editor: lexicalEditor(),
