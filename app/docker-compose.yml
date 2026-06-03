@@ -21,7 +21,8 @@ services:
       DATABASE_URL: file:./app.db
       # 開發用密鑰 — 正式環境請改成安全的隨機字串
       PAYLOAD_SECRET: change-me-to-a-random-secret
-    command: sh -c "npm install && npm run dev"
+    # -H 0.0.0.0 讓 dev server 綁定所有介面, 容器外才連得到
+    command: sh -c "npm install && npm run dev -- -H 0.0.0.0"
 
 volumes:
   node_modules:
