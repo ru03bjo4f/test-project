@@ -72,6 +72,8 @@ export interface Config {
     categories: Category;
     tags: Tag;
     media: Media;
+    comments: Comment;
+    submissions: Submission;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -85,6 +87,8 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    comments: CommentsSelect<false> | CommentsSelect<true>;
+    submissions: SubmissionsSelect<false> | SubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -295,6 +299,32 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments".
+ */
+export interface Comment {
+  id: number;
+  post: number | Post;
+  authorName: string;
+  email?: string | null;
+  content: string;
+  approved?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "submissions".
+ */
+export interface Submission {
+  id: number;
+  name: string;
+  email: string;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -336,6 +366,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'comments';
+        value: number | Comment;
+      } | null)
+    | ({
+        relationTo: 'submissions';
+        value: number | Submission;
       } | null)
     | ({
         relationTo: 'users';
@@ -454,6 +492,30 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "comments_select".
+ */
+export interface CommentsSelect<T extends boolean = true> {
+  post?: T;
+  authorName?: T;
+  email?: T;
+  content?: T;
+  approved?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "submissions_select".
+ */
+export interface SubmissionsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

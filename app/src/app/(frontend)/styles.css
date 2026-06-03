@@ -436,6 +436,170 @@ a:hover {
   margin: 4px 0;
 }
 
+/* ---------- 搜尋 ---------- */
+.search-form input {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+
+.search-form input:focus {
+  border-color: var(--color-accent);
+}
+
+.search-form--page {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.search-form--page input {
+  flex: 1;
+}
+
+.search-form--page button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.search-results {
+  display: grid;
+  gap: 10px;
+}
+
+.search-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+}
+
+.search-result:hover {
+  background: var(--color-accent-soft);
+  text-decoration: none;
+}
+
+/* ---------- 通用表單 (聯絡/留言) ---------- */
+.cms-form {
+  display: grid;
+  gap: 16px;
+  max-width: 560px;
+}
+
+.cms-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.cms-form input,
+.cms-form textarea {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+}
+
+.cms-form input:focus,
+.cms-form textarea:focus {
+  border-color: var(--color-accent);
+}
+
+.cms-form button {
+  justify-self: start;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cms-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.form-success {
+  padding: 14px 18px;
+  background: #ecfdf5;
+  color: #065f46;
+  border-radius: 8px;
+}
+
+.form-error {
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+/* ---------- 留言 ---------- */
+.comments {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--color-border);
+}
+
+.comments__title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  display: grid;
+  gap: 16px;
+}
+
+.comment {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+
+.comment__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.comment__head strong {
+  color: var(--color-text);
+}
+
+.comment__body {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.comments__form-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
 /* ---------- 響應式 ---------- */
 @media (max-width: 768px) {
   .hero__title {

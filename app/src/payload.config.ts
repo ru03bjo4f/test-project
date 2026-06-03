@@ -12,6 +12,8 @@ import { Posts } from './collections/Posts'
 import { Pages } from './collections/Pages'
 import { Categories } from './collections/Categories'
 import { Tags } from './collections/Tags'
+import { Comments } from './collections/Comments'
+import { Submissions } from './collections/Submissions'
 import { SiteSettings } from './globals/SiteSettings'
 import { lexicalZhTw } from './i18n/lexical-zhtw'
 
@@ -37,7 +39,7 @@ export default buildConfig({
       zhTw: { lexical: lexicalZhTw },
     },
   },
-  collections: [Posts, Pages, Categories, Tags, Media, Users],
+  collections: [Posts, Pages, Categories, Tags, Media, Comments, Submissions, Users],
   globals: [SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

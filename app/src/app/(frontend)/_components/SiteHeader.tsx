@@ -48,7 +48,11 @@ export default async function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link href="/contact">聯絡</Link>
           <Link href="/plugins">外掛</Link>
+          <form action="/search" className="search-form" role="search">
+            <input type="search" name="q" placeholder="搜尋…" aria-label="搜尋" />
+          </form>
           <a href="/admin" className="site-nav__admin">
             後台管理
           </a>

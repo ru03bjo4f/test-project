@@ -55,3 +55,7 @@ export const publishedOrPrivileged: Access = ({ req: { user } }) => {
 
 /** 欄位層級：僅管理員可修改 (例如 role 欄位) */
 export const adminFieldAccess: FieldAccess = ({ req: { user } }) => hasRole(user, 'admin')
+
+/** 欄位層級：管理員或編輯可修改 (例如留言的「已核准」欄位) */
+export const adminOrEditorFieldAccess: FieldAccess = ({ req: { user } }) =>
+  hasRole(user, 'admin', 'editor')

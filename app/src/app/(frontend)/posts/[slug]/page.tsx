@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import { applyFilters, doAction } from '@/plugins'
+import CommentForm from '../../_components/CommentForm'
 import MediaImage from '../../_components/MediaImage'
 import RichTextRenderer from '../../_components/RichTextRenderer'
 import {
@@ -58,6 +59,16 @@ export default async function PostPage({ params }: Args) {
     post,
   )
 
+  // 取得本文已核准的留言
+  const payload = await getPayload({ config: await config })
+  const { docs: comments } = await payload.find({
+    collection: 'comments',
+    where: { and: [{ post: { equals: post.id } }, { approved: { equals: true } }] },
+    sort: '-createdAt',
+    depth: 0,
+    limit: 100,
+  })
+
   return (
     <article className="article container--narrow">
       <header className="article__header">
@@ -94,6 +105,27 @@ export default async function PostPage({ params }: Args) {
       <div className="article__content prose">
         <RichTextRenderer data={post.content} />
       </div>
+
+      <section className="comments">
+        <h2 className="comments__title">留言 ({comments.length})</h2>
+        {comments.length === 0 ? (
+          <p style={{ color: '#6b7280' }}>還沒有留言，成為第一個留言的人吧！</p>
+        ) : (
+          <ul className="comment-list">
+            {comments.map((c) => (
+              <li key={c.id} className="comment">
+                <div className="comment__head">
+                  <strong>{c.authorName}</strong>
+                  <span>{formatDate(c.createdAt)}</span>
+                </div>
+                <p className="comment__body">{c.content}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+        <h3 className="comments__form-title">發表留言</h3>
+        <CommentForm postId={post.id} />
+      </section>
 
       <footer className="article__footer">
         <a href="/" className="back-link">
