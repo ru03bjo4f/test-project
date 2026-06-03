@@ -30,6 +30,7 @@ export default async function SiteHeader() {
               {page.title}
             </Link>
           ))}
+          <Link href="/plugins">外掛</Link>
           <a href="/admin" className="site-nav__admin">
             後台管理
           </a>
