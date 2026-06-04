@@ -25,9 +25,12 @@ const dirname = path.dirname(filename)
 //   postgres://... → PostgreSQL (正式/容器環境)
 //   其他 (file:...) → SQLite     (本機快速開發, 免外部資料庫)
 const databaseURL = process.env.DATABASE_URL || 'file:./app.db'
+// push=true 會在啟動時自動同步 schema (開發方便, 但正式環境有風險);
+// 正式環境設 PAYLOAD_DB_PUSH=false, 改用 migration (npm run migrate) 管理 schema。
+const dbPush = process.env.PAYLOAD_DB_PUSH !== 'false'
 const db = databaseURL.startsWith('postgres')
-  ? postgresAdapter({ pool: { connectionString: databaseURL } })
-  : sqliteAdapter({ client: { url: databaseURL } })
+  ? postgresAdapter({ pool: { connectionString: databaseURL }, push: dbPush })
+  : sqliteAdapter({ client: { url: databaseURL }, push: dbPush })
 
 export default buildConfig({
   admin: {
