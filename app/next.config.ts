@@ -7,6 +7,8 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  // 正式部署用: 產出自帶最小依賴的 standalone 伺服器, 容器映像更小
+  output: 'standalone',
   images: {
     localPatterns: [
       {

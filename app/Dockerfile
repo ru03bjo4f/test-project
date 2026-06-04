@@ -25,6 +25,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Payload 在 build 期間需要這些環境變數存在 (頁面皆為動態渲染, build 不會真正
+# 連線資料庫)。實際值於執行期由部署平台注入; 此處用 SQLite 佔位避免外部相依。
+ENV DATABASE_URL=file:/tmp/build.db
+ENV PAYLOAD_SECRET=build-time-placeholder
+ENV PAYLOAD_DB_PUSH=false
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.

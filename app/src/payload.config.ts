@@ -45,10 +45,10 @@ export default buildConfig({
   // 後台介面語言: 繁體中文;
   // 補上 Lexical 編輯器缺少的繁體翻譯 (官方僅提供簡體)。
   i18n: {
-    supportedLanguages: { zhTw },
-    fallbackLanguage: 'zhTw',
+    supportedLanguages: { 'zh-TW': zhTw },
+    fallbackLanguage: 'zh-TW',
     translations: {
-      zhTw: { lexical: lexicalZhTw },
+      'zh-TW': { lexical: lexicalZhTw },
     },
   },
   collections: [Posts, Pages, Categories, Tags, Media, Comments, Submissions, Users],
