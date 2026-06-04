@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { publishedConditions } from '@/lib/posts'
 
 export const dynamic = 'force-dynamic'
 export const metadata = { title: '搜尋' }
@@ -23,7 +24,7 @@ export default async function SearchPage({ searchParams }: Args) {
         collection: 'posts',
         where: {
           and: [
-            { _status: { equals: 'published' } },
+            ...publishedConditions(),
             { or: [{ title: { like: query } }, { excerpt: { like: query } }] },
           ],
         },

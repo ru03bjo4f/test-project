@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import { SITE_URL, getSiteSettings } from '@/lib/site'
+import { publishedPostsWhere } from '@/lib/posts'
 
 const escapeXml = (s: string): string =>
   s.replace(
@@ -15,7 +16,7 @@ export async function GET() {
   const settings = await getSiteSettings()
   const { docs } = await payload.find({
     collection: 'posts',
-    where: { _status: { equals: 'published' } },
+    where: publishedPostsWhere(),
     sort: '-publishedAt',
     limit: 20,
     depth: 0,

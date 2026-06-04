@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { publishedConditions } from '@/lib/posts'
 import { applyFilters, doAction } from '@/plugins'
 import CommentForm from '../../_components/CommentForm'
 import MediaImage from '../../_components/MediaImage'
@@ -10,8 +12,8 @@ import RichTextRenderer from '../../_components/RichTextRenderer'
 import {
   formatDate,
   getAuthorName,
-  getCategoryNames,
   getMediaURL,
+  getTermLinks,
 } from '../../_lib/format'
 
 export const dynamic = 'force-dynamic'
@@ -24,7 +26,7 @@ async function getPost(slug: string) {
   const payload = await getPayload({ config: await config })
   const { docs } = await payload.find({
     collection: 'posts',
-    where: { slug: { equals: decodedSlug }, _status: { equals: 'published' } },
+    where: { and: [{ slug: { equals: decodedSlug } }, ...publishedConditions()] },
     depth: 2,
     limit: 1,
   })
@@ -47,7 +49,8 @@ export default async function PostPage({ params }: Args) {
   if (!post) notFound()
 
   const cover = getMediaURL(post.featuredImage)
-  const categories = getCategoryNames(post.categories)
+  const categories = getTermLinks(post.categories)
+  const tags = getTermLinks(post.tags)
 
   // 擴充點 (action): 觸發文章瀏覽事件, 供統計類外掛監聽
   doAction('post.viewed', post)
@@ -74,10 +77,10 @@ export default async function PostPage({ params }: Args) {
       <header className="article__header">
         {categories.length > 0 && (
           <div className="article__categories">
-            {categories.map((name) => (
-              <span key={name} className="tag">
-                {name}
-              </span>
+            {categories.map((c) => (
+              <Link key={c.slug} href={`/categories/${c.slug}`} className="tag">
+                {c.name}
+              </Link>
             ))}
           </div>
         )}
@@ -105,6 +108,16 @@ export default async function PostPage({ params }: Args) {
       <div className="article__content prose">
         <RichTextRenderer data={post.content} />
       </div>
+
+      {tags.length > 0 && (
+        <div className="article__tags">
+          {tags.map((t) => (
+            <Link key={t.slug} href={`/tags/${t.slug}`} className="tag tag--soft">
+              #{t.name}
+            </Link>
+          ))}
+        </div>
+      )}
 
       <section className="comments">
         <h2 className="comments__title">留言 ({comments.length})</h2>

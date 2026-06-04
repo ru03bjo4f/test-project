@@ -1,4 +1,4 @@
-import type { Category, Media, User } from '@/payload-types'
+import type { Category, Media, Tag, User } from '@/payload-types'
 
 /** 將日期格式化為繁體中文 (對應 WP 的發佈日期顯示)。 */
 export const formatDate = (value?: string | null): string => {
@@ -36,4 +36,20 @@ export const getCategoryNames = (
   return categories
     .filter((c): c is Category => typeof c !== 'number')
     .map((c) => c.name)
+}
+
+export type TermLink = { name: string; slug: string }
+
+/**
+ * 從關聯的分類/標籤取出 { 名稱, slug } 供連結到彙整頁。
+ * 略過尚未展開的純 id, 以及沒有 slug 的項目。
+ */
+export const getTermLinks = (
+  terms?: (number | Category | Tag)[] | null,
+): TermLink[] => {
+  if (!terms) return []
+  return terms
+    .filter((t): t is Category | Tag => typeof t !== 'number')
+    .map((t) => ({ name: t.name, slug: t.slug ?? '' }))
+    .filter((t) => t.slug !== '')
 }

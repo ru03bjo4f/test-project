@@ -600,6 +600,38 @@ a:hover {
   margin: 0 0 16px;
 }
 
+/* ---------- 彙整頁 / 標籤 ---------- */
+.archive__kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin: 0 0 4px;
+}
+
+a.tag {
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+a.tag:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.article__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.tag--soft {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
 /* ---------- 響應式 ---------- */
 @media (max-width: 768px) {
   .hero__title {

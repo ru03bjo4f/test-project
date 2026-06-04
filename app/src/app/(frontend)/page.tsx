@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { publishedPostsWhere } from '@/lib/posts'
 import PostCard from './_components/PostCard'
 
 export const dynamic = 'force-dynamic'
@@ -10,7 +11,7 @@ export default async function HomePage() {
   const payload = await getPayload({ config: await config })
   const { docs: posts } = await payload.find({
     collection: 'posts',
-    where: { _status: { equals: 'published' } },
+    where: publishedPostsWhere(),
     sort: '-publishedAt',
     depth: 1,
     limit: 12,
