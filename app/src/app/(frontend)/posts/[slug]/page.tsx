@@ -8,6 +8,7 @@ import { publishedConditions } from '@/lib/posts'
 import { applyFilters, doAction } from '@/plugins'
 import CommentForm from '../../_components/CommentForm'
 import MediaImage from '../../_components/MediaImage'
+import PostCard from '../../_components/PostCard'
 import RichTextRenderer from '../../_components/RichTextRenderer'
 import {
   formatDate,
@@ -62,8 +63,9 @@ export default async function PostPage({ params }: Args) {
     post,
   )
 
-  // 取得本文已核准的留言
   const payload = await getPayload({ config: await config })
+
+  // 取得本文已核准的留言
   const { docs: comments } = await payload.find({
     collection: 'comments',
     where: { and: [{ post: { equals: post.id } }, { approved: { equals: true } }] },
@@ -71,6 +73,27 @@ export default async function PostPage({ params }: Args) {
     depth: 0,
     limit: 100,
   })
+
+  // 相關文章: 同分類、可見、排除本文 (對應 WP 的 related posts)
+  const categoryIds = (post.categories ?? []).map((c) => (typeof c === 'number' ? c : c.id))
+  const related =
+    categoryIds.length > 0
+      ? (
+          await payload.find({
+            collection: 'posts',
+            where: {
+              and: [
+                ...publishedConditions(),
+                { categories: { in: categoryIds } },
+                { id: { not_equals: post.id } },
+              ],
+            },
+            sort: '-publishedAt',
+            depth: 1,
+            limit: 3,
+          })
+        ).docs
+      : []
 
   return (
     <article className="article container--narrow">
@@ -117,6 +140,17 @@ export default async function PostPage({ params }: Args) {
             </Link>
           ))}
         </div>
+      )}
+
+      {related.length > 0 && (
+        <section className="related">
+          <h2 className="related__title">相關文章</h2>
+          <div className="post-grid">
+            {related.map((p) => (
+              <PostCard key={p.id} post={p} />
+            ))}
+          </div>
+        </section>
       )}
 
       <section className="comments">
